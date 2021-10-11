@@ -1,19 +1,27 @@
 <template>
   <div id="app">
-    <Tasks/>
+    <b-container >
+      <b-card class="text-center card-container">
+        <!-- <b-card-header>
+          <h1>TEST</h1>
+        </b-card-header> -->
+        <b-card-body>
+          <main>
+            <router-view />
+          </main>
+        </b-card-body>
+      </b-card>
+    </b-container>
   </div>
 </template>
 
 <script>
 
-import Tasks from './components/tasks/Tasks.vue'
-
 export default {
   name: 'App',
   components: {
-    Tasks
-  }
-}
+  },
+};
 </script>
 
 <style>
@@ -24,5 +32,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.card-container {
+  min-height : 700px;
 }
 </style>

@@ -1,0 +1,113 @@
+<template>
+  <div v-if="task">
+    <b-card-title class="text-left">{{taskHeader}} Part 2</b-card-title>
+    <b-alert variant="success" :show="task.completed">You passed the exam</b-alert>
+    <b-alert variant="danger" :show="!task.completed">You failed the exam</b-alert>
+    <b-row>
+      <b-col>
+        <component
+          v-bind:is="component"
+          :questionAnswers="task.questionAnswers"
+          @questionAnswersSubmitted="(questionAnswers) => handleAnswersSubmitted(questionAnswers)"
+        />
+      </b-col>
+    </b-row>
+  </div>
+</template>
+
+<script>
+import { mapState, mapActions } from 'vuex';
+import IdentificationForm from './forms/IdentificationForm.vue';
+import ChoiceForm from './forms/ChoiceForm.vue';
+import SequenceForm from './forms/SequenceForm.vue';
+import SummaryStoryForm from './forms/SummaryStoryForm.vue';
+
+export default {
+  name: 'TaskQuestionnaire',
+  created() {
+    this.getTask(this.taskId).then(() => {
+      this.showComponent();
+    });
+  },
+  components: {
+    IdentificationForm,
+    ChoiceForm,
+    SequenceForm,
+    SummaryStoryForm,
+  },
+  props: {
+    assessmentId: String,
+    taskId: Number,
+  },
+  data() {
+    return {
+      component: '',
+    };
+  },
+  computed: {
+    ...mapState({
+      task: (state) => state.task,
+    }),
+    taskHeader() {
+      // eslint-disable-next-line no-nested-ternary
+      return this.task.taskType === 'REGULAR'
+        ? `Task ${this.task.number}`
+        : this.task.taskType === 'INITIAL_ASSESSMENT'
+        ? 'Initial Assessment Page'
+        : 'Final Assessment Page';
+    },
+  },
+  methods: {
+    ...mapActions(['getTask', 'submitTaskPart2']),
+    onSubmitClick() {
+      console.log(this.task.questionAnswers);
+    },
+    handleAnswersSubmitted(answers) {
+      this.submitTaskPart2({ taskId: this.taskId, answers }).then((task) => {
+        console.log(task);
+        if (task.completed) {
+          this.$router.push({
+            name: 'Tasks',
+            params: {
+              taskId: this.taskId,
+              assessmentId: this.assessmentId,
+            },
+          });
+        }
+      });
+    },
+    showComponent() {
+      // console.log(this.task.questionAnswers[0]);
+      const questionAnswer = this.task.questionAnswers[0];
+      switch (questionAnswer.question.dtype) {
+        case 'ChoiceQuestion':
+          this.component = 'ChoiceForm';
+          break;
+        case 'IdentificationQuestion':
+          this.component = 'IdentificationForm';
+          break;
+        case 'SequenceQuestion':
+          this.component = 'SequenceForm';
+          break;
+        case 'SummaryQuestion':
+          this.component = 'SummaryStoryForm';
+          break;
+        default:
+          this.component = '';
+      }
+    },
+    onContinueClick() {
+      this.$router.push({
+        name: 'TaskQuestionnaire',
+      });
+    },
+  },
+};
+</script>
+
+<style  scoped>
+.task-button {
+  margin: 0px 100px;
+  padding: 10px 100px;
+}
+</style>
