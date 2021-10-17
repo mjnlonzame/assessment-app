@@ -16,7 +16,7 @@
     </b-row>
     <b-row>
       <b-col>
-        <b-button size="lg" variant="primary" @click="onSubmitClick()">Submit</b-button>
+        <b-button size="lg" variant="outline-primary" @click="onSubmitClick()">Submit</b-button>
       </b-col>
     </b-row>
   </div>

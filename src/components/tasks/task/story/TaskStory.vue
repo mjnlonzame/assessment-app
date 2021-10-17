@@ -46,7 +46,7 @@
 
         <b-button
           size="lg"
-          variant="outline-success"
+          variant="outline-primary"
           @click="onSubmitClick()"
           :hidden="false"
           v-if="!task.hasPassedReading && this.sentences.length && !this.speaking"

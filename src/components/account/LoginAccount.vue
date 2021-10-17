@@ -49,7 +49,7 @@ s<template>
           :hasError="invalidCredentials"
           errorMessage="Email or Password is incorrect."
         />
-        <button class="btn btn-primary">Login</button>
+        <button class="btn btn-outline-primary">Login</button>
         <!-- <router-link to="/account/create" class="btn btn-link">Sign up</router-link> -->
       </div>
     </form>

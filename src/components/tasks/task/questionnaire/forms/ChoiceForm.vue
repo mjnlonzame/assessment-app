@@ -20,14 +20,10 @@
           :name="`question-${index}-options`"
         ></b-form-radio-group>
       </b-form-group>
-      <!-- <ErrorValidation
-        :hasError="$v.answers.$each[index].value.$error"
-        errorMessage="Email is required"
-      />-->
     </div>
     <b-row>
       <b-col>
-        <b-button size="lg" variant="primary" @click="onSubmitClick()">Submit</b-button>
+        <b-button size="lg" variant="outline-primary" @click="onSubmitClick()">Submit</b-button>
       </b-col>
     </b-row>
   </div>

@@ -1,14 +1,16 @@
 <template>
   <div v-if="task" class="questionnaire-container">
+    <b-alert variant="success" :show="task.completed">You passed the exam</b-alert>
+    <b-alert variant="danger" :show="!task.completed && submitted">You have failed the test</b-alert>
     <!-- <b-card-title class="text-left">{{taskHeader}} Part 2</b-card-title> -->
     <div class="text-left">
       <h1>{{taskHeader}} Part 2</h1>
     </div>
     <div>
-      <p class=" text-left h5">{{task.instruction}}</p>
+      <p class="text-left h5">{{task.instruction}}</p>
     </div>
-    <b-alert variant="success" :show="task.completed">You passed the exam</b-alert>
-    <b-alert variant="danger" :show="!task.completed && submitted">You failed the exam</b-alert>
+    <br />
+
     <b-row>
       <b-col>
         <component

@@ -149,18 +149,18 @@
             </b-col>
           </b-row>
           <b-row class="row">
-            <b-col cols="8" class=" text-center">
-              <button class="btn btn-primary" @click.prevent="onRegisterClick">Register</button>
+            <b-col cols="8" class="text-center">
+              <ErrorValidation :hasError="hasError" :errorMessage="error && error.message" />
+              <button class="btn btn-outline-primary" @click.prevent="onRegisterClick">Register</button>
             </b-col>
           </b-row>
-          <br>
+          <br />
           <b-row class="row">
-            <b-col cols="4" >
+            <b-col cols="4">
               <span>Have an account?</span>
             </b-col>
             <b-col cols="1" class="text-center" offset="*">
-              <router-link to="/login" class="btn btn-primary">Login</router-link>
-              <!-- <button class="btn btn-primary" @click.prevent="onLoginClick">Login</button> -->
+              <router-link to="/login" class="btn btn-outline-primary">Login</router-link>
             </b-col>
           </b-row>
         </form>
@@ -188,10 +188,9 @@ export default {
         email: '',
         password: '',
         schoolName: '',
-        birthDate: 'dasda',
+        birthDate: null,
       },
-      // formatted: '',
-      // selected: '',
+      hasError: false,
     };
   },
   created() {},
@@ -200,19 +199,24 @@ export default {
     onRegisterClick() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        this.register(this.student).then((student) => {
-          this.getAssessment(student.id).then((assessment) => {
-            this.getInitialTask(assessment.id).then((task) => {
-              this.$router.push({
-                name: 'TaskStory',
-                params: {
-                  taskId: task.id,
-                  assessmentId: assessment.id,
-                },
+        this.register(this.student)
+          .then((student) => {
+            console.log(student);
+            this.getAssessment(student.id).then((assessment) => {
+              this.getInitialTask(assessment.id).then((task) => {
+                this.$router.push({
+                  name: 'TaskStory',
+                  params: {
+                    taskId: task.id,
+                    assessmentId: assessment.id,
+                  },
+                });
               });
             });
+          })
+          .catch(() => {
+            this.hasError = true;
           });
-        });
       }
     },
     onLoginClick() {
@@ -220,17 +224,11 @@ export default {
         name: 'LoginAccount',
       });
     },
-    // onContext(ctx) {
-    //   console.log('date', ctx);
-    //   // The date formatted in the locale, or the `label-no-date-selected` string
-    //   this.formatted = ctx.selectedFormatted;
-    //   // The following will be an empty string until a valid date is entered
-    //   this.selected = ctx.selectedYMD;
-    // },
   },
   computed: {
     ...mapState({
       assessmentResult: (state) => state.student,
+      error: (state) => state.error,
     }),
   },
   validations: {
@@ -252,5 +250,4 @@ export default {
   border: 1px solid gray;
   height: 100%;
 }
-
 </style>
