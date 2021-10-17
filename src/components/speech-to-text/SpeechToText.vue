@@ -1,14 +1,5 @@
 <template>
   <div>
-    <!-- <p v-if="error" class="grey--text">{{error}}</p>
-          <p  v-if="sentences.length > 0" class="mb-0">
-            <span
-
-              v-for="sentence in sentences"
-              :key="sentence"
-            >{{sentence}}.</span>
-            <span>{{runtimeTranscription}}</span>
-    </p>-->
     <span>{{toggle ? 'Stop' : 'Start'}} Reading</span>
     <b-button
       variant="light"
@@ -25,34 +16,7 @@
       </b-icon>
     </b-button>
   </div>
-  <!-- <v-card>
-    <v-card-text>
-      <v-layout row wrap justify-space-around>
-        <v-flex xs8 sm9 text-xs-center>
-          <p v-if="error" class="grey--text">{{error}}</p>
-          <p  v-if="sentences.length > 0" class="mb-0">
-            <span
 
-              v-for="sentence in sentences"
-              :key="sentence"
-            >{{sentence}}.</span>
-            <span>{{runtimeTranscription}}</span>
-          </p>
-        </v-flex>
-        <v-flex xs2 sm1 text-xs-center>
-          <v-btn
-            dark
-            @click.stop="toggle ? endSpeechRecognition() : startSpeechRecognition()"
-            icon
-            :color="!toggle ? 'grey' : (speaking ? 'red' : 'red darken-3')"
-            :class="{'animated infinite pulse': toggle}"
-          >
-            <v-icon>{{toggle ? 'mic_off' : 'mic'}}</v-icon>
-          </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-card-text>
-  </v-card>-->
 </template>
 
 <script>
@@ -89,10 +53,10 @@ export default {
 
     recognition.addEventListener('end', () => {
       if (this.runtimeTranscription !== '') {
-        // this.sentences.push(
-        //   this.capitalizeFirstLetter(this.runtimeTranscription),
-        // );
-        this.sentences = this.capitalizeFirstLetter(this.runtimeTranscription);
+        this.sentences.push(
+          this.capitalizeFirstLetter(this.runtimeTranscription),
+        );
+        // this.sentences = this.capitalizeFirstLetter(this.runtimeTranscription);
         this.$emit(
           'update:text',
           `${this.text}${this.sentences.slice(-1)[0]}. `,
@@ -113,7 +77,7 @@ export default {
       speaking: false,
       toggle: false,
       runtimeTranscription: '',
-      sentences: '',
+      sentences: [],
     };
   },
   methods: {

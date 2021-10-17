@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <b-container >
-      <b-card class="text-center card-container">
-        <!-- <b-card-header>
-          <h1>TEST</h1>
-        </b-card-header> -->
+    <b-container>
+      <nav>
+        <b-breadcrumb :items="$route.meta.breadCrumb" :disabled="true"></b-breadcrumb>
+      </nav>
+
+      <b-card class="text-center">
         <b-card-body>
           <main>
             <router-view />
@@ -16,11 +17,10 @@
 </template>
 
 <script>
-
 export default {
   name: 'App',
-  components: {
-  },
+  components: {},
+
 };
 </script>
 
@@ -35,6 +35,10 @@ export default {
 }
 
 .card-container {
-  min-height : 700px;
+  min-height: 700px;
+}
+
+.hasErrors {
+  border-color: red !important;
 }
 </style>

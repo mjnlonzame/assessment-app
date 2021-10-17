@@ -1,13 +1,20 @@
 <template>
-  <div v-if="task">
-    <b-card-title class="text-left">{{taskHeader}} Part 2</b-card-title>
+  <div v-if="task" class="questionnaire-container">
+    <!-- <b-card-title class="text-left">{{taskHeader}} Part 2</b-card-title> -->
+    <div class="text-left">
+      <h1>{{taskHeader}} Part 2</h1>
+    </div>
+    <div>
+      <p class=" text-left h5">{{task.instruction}}</p>
+    </div>
     <b-alert variant="success" :show="task.completed">You passed the exam</b-alert>
-    <b-alert variant="danger" :show="!task.completed">You failed the exam</b-alert>
+    <b-alert variant="danger" :show="!task.completed && submitted">You failed the exam</b-alert>
     <b-row>
       <b-col>
         <component
           v-bind:is="component"
           :questionAnswers="task.questionAnswers"
+          :submitted="submitted"
           @questionAnswersSubmitted="(questionAnswers) => handleAnswersSubmitted(questionAnswers)"
         />
       </b-col>
@@ -42,6 +49,7 @@ export default {
   data() {
     return {
       component: '',
+      submitted: false,
     };
   },
   computed: {
@@ -59,15 +67,23 @@ export default {
   },
   methods: {
     ...mapActions(['getTask', 'submitTaskPart2']),
-    onSubmitClick() {
-      console.log(this.task.questionAnswers);
-    },
     handleAnswersSubmitted(answers) {
       this.submitTaskPart2({ taskId: this.taskId, answers }).then((task) => {
-        console.log(task);
+        this.submitted = true;
         if (task.completed) {
+          if (
+            !this.$session.get('initTaskFinished')
+            && task.taskType === 'INITIAL_ASSESSMENT'
+            && task.completed
+          ) {
+            this.$session.set('initTaskFinished', true);
+          }
+
           this.$router.push({
-            name: 'Tasks',
+            name:
+              task.taskType !== 'FINAL_ASSESSMENT'
+                ? 'Tasks'
+                : 'AssessmentResult',
             params: {
               taskId: this.taskId,
               assessmentId: this.assessmentId,
@@ -77,7 +93,6 @@ export default {
       });
     },
     showComponent() {
-      // console.log(this.task.questionAnswers[0]);
       const questionAnswer = this.task.questionAnswers[0];
       switch (questionAnswer.question.dtype) {
         case 'ChoiceQuestion':
@@ -96,18 +111,21 @@ export default {
           this.component = '';
       }
     },
-    onContinueClick() {
-      this.$router.push({
-        name: 'TaskQuestionnaire',
-      });
-    },
   },
 };
 </script>
 
-<style  scoped>
+<style>
 .task-button {
   margin: 0px 100px;
   padding: 10px 100px;
+}
+
+.questionnaire-container {
+  min-height: 500px;
+}
+
+.question-content {
+  margin: 5px 0px;
 }
 </style>

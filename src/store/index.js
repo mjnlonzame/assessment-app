@@ -9,6 +9,7 @@ export default new Vuex.Store({
     assessment: null,
     tasks: [],
     task: null,
+    assessmentResult: null,
   },
 
   mutations: {
@@ -24,6 +25,9 @@ export default new Vuex.Store({
     updateTask(state, task) {
       state.task = task;
     },
+    updateAssessmentResult(state, assessmentResult) {
+      state.assessmentResult = assessmentResult;
+    },
   },
   getters: {
 
@@ -37,6 +41,10 @@ export default new Vuex.Store({
         return response.data;
       }).catch(console.error);
     },
+    // eslint-disable-next-line no-empty-pattern
+    register({}, student) {
+      return axios.post('/api/student/register', student).then((response) => response.data).catch(console.error);
+    },
     getAssessment({
       commit,
     }, studentId) {
@@ -44,6 +52,17 @@ export default new Vuex.Store({
         .get(`/api/assessment/${studentId}/load`)
         .then((response) => {
           commit('updateAssessment', response.data);
+          return response.data;
+        });
+    },
+    getAssessmentResult({
+      commit,
+    }, studentId) {
+      return axios
+        .get(`/api/assessment/${studentId}/result`)
+        .then((response) => {
+          commit('updateAssessmentResult', response.data);
+          console.log(response.data);
           return response.data;
         });
     },

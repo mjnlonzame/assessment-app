@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tasks-container">
     <b-container>
       <b-row v-for="(task, index) in tasks" :key="index" align-v="start">
         <b-col
@@ -63,7 +63,7 @@ export default {
         .filter((currTask) => currTask.taskType !== 'FINAL_ASSESSMENT')
         .every((currTask) => currTask.completed);
       console.log('TASK NOT FINISH!!', areAllPriorTasksFinished);
-      return !areAllPriorTasksFinished;
+      return !areAllPriorTasksFinished || task.completed;
     },
   },
 };
@@ -74,5 +74,8 @@ export default {
   margin: 10px 100px;
   padding: 10px 100px;
   width: 40%;
+}
+.tasks-container {
+  min-height : 500px;
 }
 </style>

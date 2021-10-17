@@ -11,6 +11,9 @@ module.exports = {
     parser: 'babel-eslint',
   },
   rules: {
+    'max-len': ["error", {
+      "code": 120
+    }],
     'vue/max-attributes-per-line': [2, {
       'singleline': 20,
       'multiline': {

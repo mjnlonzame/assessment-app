@@ -1,8 +1,10 @@
 import Vue from 'vue';
+
 import {
   BootstrapVue,
   IconsPlugin,
 } from 'bootstrap-vue';
+import VueSession from 'vue-session';
 import Vuelidate from 'vuelidate';
 import App from './App.vue';
 import router from './router';
@@ -22,6 +24,10 @@ Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 
 Vue.use(Vuelidate);
+
+Vue.use(VueSession, {
+  persist: false,
+});
 
 new Vue({
   render: (h) => h(App),

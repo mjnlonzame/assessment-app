@@ -1,11 +1,18 @@
 <template>
   <div>
-    <b-row v-for="(answer, index) in answers" :key="answer.questionId">
-      <b-col sm="6">
-        <label :for="`question-${index}`">{{answer.question}}</label>
+    <b-row v-for="(answer, index) in answers" :key="answer.questionId" class="question-content">
+      <b-col sm="7" class="text-left" offset="1">
+        <label :for="`question-${index}`">{{(index + 1) + ". " + answer.question}}</label>
       </b-col>
-      <b-col sm="6">
-        <b-form-input :id="`question-${index}`" v-model="answer.value"></b-form-input>
+      <b-col sm="2" offset="*">
+        <b-form-input
+          :id="`question-${index}`"
+          type="number"
+          v-model="answer.value"
+          :class="{ hasErrors: $v.answers.$each[index].value.$error }"
+          :state="answerState(index)"
+          @blur="$v.answers.$each[index].value.$touch()"
+        ></b-form-input>
       </b-col>
     </b-row>
     <b-row>
@@ -18,6 +25,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import { required } from 'vuelidate/lib/validators';
 
 export default {
   name: 'SequenceForm',
@@ -28,6 +36,7 @@ export default {
       answer.questionId = choice.id;
       answer.question = choice.value;
       answer.value = '';
+      answer.correctAnswer = choice.sequenceOrder;
       this.answers.push(answer);
     });
   },
@@ -35,6 +44,7 @@ export default {
     questionAnswers: {
       type: Array,
     },
+    submitted: Boolean,
   },
   data() {
     return {
@@ -51,13 +61,29 @@ export default {
 
     onSubmitClick() {
       console.log(this.answers);
-      const answers = [
-        {
-          questionId: this.task.questionAnswers[0].question.id,
-          value: this.answers.map((answer) => answer.value).join(' '),
-        },
-      ];
-      this.$emit('questionAnswersSubmitted', answers);
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        const answers = [
+          {
+            questionId: this.task.questionAnswers[0].question.id,
+            value: this.answers.map((answer) => answer.value).join(' '),
+          },
+        ];
+        this.$emit('questionAnswersSubmitted', answers);
+      }
+    },
+    answerState(index) {
+      const answer = this.answers[index];
+      if (!this.submitted || answer.value === '') return null;
+      console.log(answer.value, answer.correctAnswer);
+      return Number(answer.value) === answer.correctAnswer;
+    },
+  },
+  validations: {
+    answers: {
+      $each: {
+        value: { required },
+      },
     },
   },
 };

@@ -52,6 +52,7 @@ export default {
       this.$emit('questionAnswersSubmitted', answers);
     },
   },
+
 };
 </script>
 

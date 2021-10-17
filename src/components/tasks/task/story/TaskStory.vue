@@ -1,6 +1,11 @@
 <template>
-  <div v-if="task">
-    <b-card-title class="text-left">{{taskHeader}} Part 1</b-card-title>
+  <div v-if="task" class="story-container">
+    <div class="text-left">
+      <h1>{{taskHeader}} Part 1</h1>
+    </div>
+    <div>
+      <p class="lead text-left">Read the '<em>{{task.story.title}}</em>' story below</p>
+    </div>
     <b-row>
       <b-col>
         <b-form-textarea
@@ -44,7 +49,7 @@
           variant="outline-success"
           @click="onSubmitClick()"
           :hidden="false"
-          v-if="!task.hasPassedReading && this.sentences && !this.speaking"
+          v-if="!task.hasPassedReading && this.sentences.length && !this.speaking"
         >Submit Reading</b-button>
       </b-col>
     </b-row>
@@ -65,12 +70,13 @@ export default {
   },
   props: {
     taskId: Number,
-    assessmentId: String,
+    assessmentId: Number,
   },
   data() {
     return {
-      sentences: null,
+      sentences: [],
       speaking: null,
+      text: '',
     };
   },
   computed: {
@@ -79,7 +85,11 @@ export default {
     }),
     taskHeader() {
       // eslint-disable-next-line no-nested-ternary
-      return this.task.taskType === 'REGULAR' ? `Task ${this.task.number}` : this.task.taskType === 'INITIAL_ASSESSMENT' ? 'Initial Assessment Page' : 'Final Assessment Page';
+      return this.task.taskType === 'REGULAR'
+        ? `Task ${this.task.number}`
+        : this.task.taskType === 'INITIAL_ASSESSMENT'
+        ? 'Initial Assessment Page'
+        : 'Final Assessment Page';
     },
   },
   methods: {
@@ -98,13 +108,13 @@ export default {
     onSubmitClick() {
       this.submitTaskPart1({
         taskId: this.taskId,
-        readWords: this.sentences,
+        readWords: this.sentences.join(''),
       }).then(() => {
-        this.sentences = null;
+        // this.sentences = [];
       });
     },
     onRetryClick() {
-      this.sentences = null;
+      this.sentences = [];
       this.task.hasPassedReading = false;
       this.task.readingScore = null;
     },
@@ -117,3 +127,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.story-container {
+  min-height: 600px;
+}
+</style>

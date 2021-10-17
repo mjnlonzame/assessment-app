@@ -1,39 +1,49 @@
 s<template>
-  <div>
+  <div class="login-container">
     <form novalidate @submit.prevent="onLoginClick">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          v-model="email"
-          name="username"
-          class="form-control"
-          :class="{ hasErrors: $v.email.$error }"
-          @blur="$v.email.$touch()"
-          Î
-        />
-        <ErrorValidation
-          :hasError="$v.email.$error &&
+      <b-row>
+        <b-col cols="6" offset="3">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <b-form-input
+              type="text"
+              id="username"
+              v-model="email"
+              name="username"
+              class="form-control"
+              :class="{ hasErrors: $v.email.$error }"
+              @blur="$v.email.$touch()"
+              Î
+            />
+            <ErrorValidation
+              :hasError="$v.email.$error &&
           !$v.email.required"
-          errorMessage="email is required"
-        />
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          v-model="password"
-          name="password"
-          class="form-control"
-          :class="{ hasErrors: $v.password.$error }"
-          @blur="$v.password.$touch()"
-        />
-        <ErrorValidation
-          :hasError="$v.password.$error &&
+              errorMessage="Email is required"
+            />
+          </div>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="6" offset="3">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              v-model="password"
+              name="password"
+              class="form-control"
+              :class="{ hasErrors: $v.password.$error }"
+              @blur="$v.password.$touch()"
+            />
+            <ErrorValidation
+              :hasError="$v.password.$error &&
           !$v.password.required"
-          errorMessage="Password is required"
-        />
-      </div>
+              errorMessage="Password is required"
+            />
+          </div>
+        </b-col>
+      </b-row>
       <div class="form-group">
         <ErrorValidation
           :hasError="invalidCredentials"
@@ -66,34 +76,48 @@ export default {
   methods: {
     ...mapActions(['login', 'getAssessment', 'getInitialTask']),
     onLoginClick() {
-      this.login({ email: this.email, password: this.password })
-        .then((student) => {
-          this.getAssessment(student.id).then((assessment) => {
-            console.log('loading task', assessment);
-            this.getInitialTask(assessment.id).then((task) => {
-              if (task.completed) {
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        this.login({ email: this.email, password: this.password })
+          .then((student) => {
+            this.$session.start();
+            this.$session.set('studentId', student.id);
+            this.getAssessment(student.id).then((assessment) => {
+              if (assessment.completed) {
                 this.$router.push({
-                  name: 'Tasks',
+                  name: 'AssessmentResult',
                   params: {
                     assessmentId: assessment.id,
                   },
                 });
               } else {
-                this.$router.push({
-                  name: 'TaskStory',
-                  params: {
-                    taskId: task.id,
-                    assessmentId: assessment.id,
-                  },
+                this.getInitialTask(assessment.id).then((task) => {
+                  this.$session.set('initTaskFinished', task.completed);
+                  if (task.completed) {
+                    this.$router.push({
+                      name: 'Tasks',
+                      params: {
+                        assessmentId: assessment.id,
+                      },
+                    });
+                  } else {
+                    this.$router.push({
+                      name: 'TaskStory',
+                      params: {
+                        taskId: task.id,
+                        assessmentId: assessment.id,
+                      },
+                    });
+                  }
                 });
               }
             });
-          });
-        })
+          })
 
-        .catch(() => {
-          this.invalidCredentials = true;
-        });
+          .catch(() => {
+            this.invalidCredentials = true;
+          });
+      }
     },
   },
   validations: {
@@ -108,4 +132,7 @@ export default {
 </script>
 
 <style  scoped>
+.login-container {
+  min-height: 300px !important;
+}
 </style>
