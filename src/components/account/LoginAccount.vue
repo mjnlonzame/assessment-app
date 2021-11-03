@@ -60,12 +60,14 @@ s<template>
 import { mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 import ErrorValidation from '../shared/ErrorValidation.vue';
+import NextTaskMixin from '../shared/mixins/NextTaskMixin.vue';
 
 export default {
   name: 'LoginAccount',
   components: {
     ErrorValidation,
   },
+  mixins: [NextTaskMixin],
   data() {
     return {
       email: '',
@@ -74,46 +76,22 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['login', 'getAssessment', 'getInitialTask']),
+    ...mapActions(['login']),
     onLoginClick() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.login({ email: this.email, password: this.password })
-          .then((student) => {
+          .then((user) => {
             this.$session.start();
-            this.$session.set('studentId', student.id);
-            this.getAssessment(student.id).then((assessment) => {
-              if (assessment.completed) {
-                this.$router.push({
-                  name: 'AssessmentResult',
-                  params: {
-                    assessmentId: assessment.id,
-                  },
-                });
-              } else {
-                this.getInitialTask(assessment.id).then((task) => {
-                  this.$session.set('initTaskFinished', task.completed);
-                  if (task.completed) {
-                    this.$router.push({
-                      name: 'Tasks',
-                      params: {
-                        assessmentId: assessment.id,
-                      },
-                    });
-                  } else {
-                    this.$router.push({
-                      name: 'TaskStory',
-                      params: {
-                        taskId: task.id,
-                        assessmentId: assessment.id,
-                      },
-                    });
-                  }
-                });
-              }
-            });
+            if (user.admin) {
+              console.log('admin user');
+              this.$router.push('/report');
+            } else {
+              console.log('student', user);
+              this.$session.set('studentId', user.student.id);
+              this.goToNextTask(user.student.id);
+            }
           })
-
           .catch(() => {
             this.invalidCredentials = true;
           });

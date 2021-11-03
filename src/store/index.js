@@ -11,6 +11,7 @@ export default new Vuex.Store({
     task: null,
     assessmentResult: null,
     error: null,
+    assessmentResults: [],
   },
 
   mutations: {
@@ -29,18 +30,32 @@ export default new Vuex.Store({
     updateAssessmentResult(state, assessmentResult) {
       state.assessmentResult = assessmentResult;
     },
+    updateAssessmentResults(state, assessmentResults) {
+      state.assessmentResults = assessmentResults;
+    },
     updateError(state, error) {
       state.error = error;
     },
   },
   getters: {
-
+    studentDetails(state) {
+      return state.student;
+    },
   },
   actions: {
     login({
       commit,
     }, loginDetails) {
-      return axios.post('/api/student/login', loginDetails).then((response) => {
+      return axios.post('/api/user/login', loginDetails).then((response) => {
+        console.log(response.data);
+        commit('updateCurrentStudent', response.data.student);
+        return response.data;
+      }).catch(console.error);
+    },
+    getStudentDetails({
+      commit,
+    }, studentId) {
+      return axios.post(`/api/student/${studentId}`).then((response) => {
         commit('updateCurrentStudent', response.data);
         return response.data;
       }).catch(console.error);
@@ -69,7 +84,16 @@ export default new Vuex.Store({
         .get(`/api/assessment/${studentId}/result`)
         .then((response) => {
           commit('updateAssessmentResult', response.data);
-          console.log(response.data);
+          return response.data;
+        });
+    },
+    getAssessmentResults({
+      commit,
+    }) {
+      return axios
+        .get('/api/assessment/results')
+        .then((response) => {
+          commit('updateAssessmentResults', response.data);
           return response.data;
         });
     },
@@ -79,7 +103,6 @@ export default new Vuex.Store({
       axios
         .get(`/api/task/${assessmentId}/load`)
         .then((response) => {
-          console.log(response.data);
           commit('updateTasks', response.data);
         });
     },
@@ -89,7 +112,6 @@ export default new Vuex.Store({
       return axios
         .get(`/api/task/${taskId}`)
         .then((response) => {
-          console.log(response.data);
           commit('updateTask', response.data);
         });
     },
@@ -97,10 +119,7 @@ export default new Vuex.Store({
     getInitialTask({}, assessmentId) {
       return axios
         .get(`/api/task/${assessmentId}/initial-task`)
-        .then((response) => {
-          console.log(response.data);
-          return response.data;
-        });
+        .then((response) => response.data);
     },
     // eslint-disable-next-line no-empty-pattern
     submitTaskPart1({
@@ -108,10 +127,12 @@ export default new Vuex.Store({
     }, {
       taskId,
       readWords,
+      time,
     }) {
       return axios
         .post(`/api/task/${taskId}/submit/part1`, {
           readWords,
+          time,
         })
         .then((response) => {
           commit('updateTask', response.data);

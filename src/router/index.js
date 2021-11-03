@@ -5,8 +5,9 @@ import Tasks from '../components/tasks/Tasks.vue';
 import TaskStory from '../components/tasks/task/story/TaskStory.vue';
 import TaskQuestionnaire from '../components/tasks/task/questionnaire/TaskQuestionnaire.vue';
 import LoginAccount from '../components/account/LoginAccount.vue';
-import CreateAccount from '../components/account/CreateAccount.vue';
+import HomePage from '../components/account/HomePage.vue';
 import AssessmentResult from '../components/assessment/AssessmentResult.vue';
+import AssessmentReport from '../components/assessment/AssessmentReport.vue';
 
 Vue.use(Router);
 
@@ -14,8 +15,8 @@ const router = new Router({
   mode: 'history',
   routes: [{
       path: '/',
-      name: 'CreateAccount',
-      component: CreateAccount,
+      name: 'HomePage',
+      component: HomePage,
       alias: '/home',
       meta: {
         breadCrumb: [{
@@ -32,7 +33,7 @@ const router = new Router({
         breadCrumb: [{
           text: 'Home',
           to: {
-            name: 'CreateAccount',
+            name: 'HomePage',
           },
         }, {
           text: 'Login',
@@ -50,7 +51,7 @@ const router = new Router({
         breadCrumb: [{
           text: 'Home',
           to: {
-            name: 'CreateAccount',
+            name: 'HomePage',
           },
         }, {
           text: 'Tasks',
@@ -68,7 +69,7 @@ const router = new Router({
         breadCrumb: [{
             text: 'Home',
             to: {
-              name: 'CreateAccount',
+              name: 'HomePage',
             },
           }, {
             text: 'Tasks',
@@ -84,7 +85,7 @@ const router = new Router({
         ],
       },
       beforeEnter: (to, from, next) => {
-        to.meta.breadCrumb[1].disabled = !router.app.$session.get('initTaskFinished');
+        // to.meta.breadCrumb[1].disabled = !router.app.$session.get('initTaskFinished');
         to.meta.breadCrumb[1].to.params = to.params;
         next();
       },
@@ -99,7 +100,7 @@ const router = new Router({
         breadCrumb: [{
             text: 'Home',
             to: {
-              name: 'CreateAccount',
+              name: 'HomePage',
             },
           }, {
             text: 'Tasks',
@@ -115,8 +116,7 @@ const router = new Router({
         ],
       },
       beforeEnter: (to, from, next) => {
-        to.meta.breadCrumb[1].disabled = !router.app.$session.get('initTaskFinished');
-        // to.meta.breadCrumb[1].active = router.app.$session.get('initTaskFinished');
+        // to.meta.breadCrumb[1].disabled = !router.app.$session.get('initTaskFinished');
         to.meta.breadCrumb[1].to.params = to.params;
         next();
       },
@@ -131,10 +131,24 @@ const router = new Router({
         breadCrumb: [{
             text: 'Home',
             to: {
-              name: 'CreateAccount',
+              name: 'HomePage',
             },
           }, {
             text: 'Assessment Result',
+            active: true,
+          },
+
+        ],
+      },
+    },
+    {
+      path: '/assessment/report',
+      name: 'AssessmentReport',
+      alias: '/report',
+      component: AssessmentReport,
+      meta: {
+        breadCrumb: [{
+            text: 'Assessment Report',
             active: true,
           },
 
@@ -148,12 +162,11 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const reqSession = to.matched.some((route) => route.meta.requiresSession);
   if (!reqSession) next();
-  console.log(to);
   if (router.app.$session.exists() || to.name === 'LoginAccount') {
     next();
   } else {
     next({
-      name: 'CreateAccount',
+      name: 'HomePage',
     });
   }
 });

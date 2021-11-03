@@ -1,10 +1,8 @@
 <template>
-  <div v-if="task" class="questionnaire-container">
-    <b-alert variant="success" :show="task.completed">You passed the exam</b-alert>
-    <b-alert variant="danger" :show="!task.completed && submitted">You have failed the test</b-alert>
-    <!-- <b-card-title class="text-left">{{taskHeader}} Part 2</b-card-title> -->
+  <div v-if="task && assessment" class="questionnaire-container">
+    <b-alert variant="danger" :show="failed">You have failed the test. Please retake.</b-alert>
     <div class="text-left">
-      <h1>{{taskHeader}} Part 2</h1>
+      <h1>{{getTaskTypeName(task.taskType)}} Part 2</h1>
     </div>
     <div>
       <p class="text-left h5">{{task.instruction}}</p>
@@ -16,7 +14,8 @@
         <component
           v-bind:is="component"
           :questionAnswers="task.questionAnswers"
-          :submitted="submitted"
+          :answersValidated="answersValidated"
+          :assessmentCompleted="assessment.completed"
           @questionAnswersSubmitted="(questionAnswers) => handleAnswersSubmitted(questionAnswers)"
         />
       </b-col>
@@ -30,10 +29,13 @@ import IdentificationForm from './forms/IdentificationForm.vue';
 import ChoiceForm from './forms/ChoiceForm.vue';
 import SequenceForm from './forms/SequenceForm.vue';
 import SummaryStoryForm from './forms/SummaryStoryForm.vue';
+import TaskTypeMixin from '../../../shared/mixins/TaskTypeMixin.vue';
 
 export default {
   name: 'TaskQuestionnaire',
+  mixins: [TaskTypeMixin],
   created() {
+    this.getAssessment(this.assessmentId);
     this.getTask(this.taskId).then(() => {
       this.showComponent();
     });
@@ -51,47 +53,50 @@ export default {
   data() {
     return {
       component: '',
+      answersValidated: false,
       submitted: false,
     };
   },
   computed: {
     ...mapState({
       task: (state) => state.task,
+      assessment: (state) => state.assessment,
     }),
-    taskHeader() {
-      // eslint-disable-next-line no-nested-ternary
-      return this.task.taskType === 'REGULAR'
-        ? `Task ${this.task.number}`
-        : this.task.taskType === 'INITIAL_ASSESSMENT'
-        ? 'Initial Assessment Page'
-        : 'Final Assessment Page';
+    failed() {
+      return !this.task.completed && this.s;
     },
   },
   methods: {
-    ...mapActions(['getTask', 'submitTaskPart2']),
+    ...mapActions(['getTask', 'submitTaskPart2', 'getAssessment']),
     handleAnswersSubmitted(answers) {
+      if (this.assessment.completed) {
+        this.answersValidated = true;
+        return;
+      }
+
       this.submitTaskPart2({ taskId: this.taskId, answers }).then((task) => {
         this.submitted = true;
-        if (task.completed) {
-          if (
-            !this.$session.get('initTaskFinished')
-            && task.taskType === 'INITIAL_ASSESSMENT'
-            && task.completed
-          ) {
-            this.$session.set('initTaskFinished', true);
-          }
-
-          this.$router.push({
-            name:
-              task.taskType !== 'FINAL_ASSESSMENT'
-                ? 'Tasks'
-                : 'AssessmentResult',
-            params: {
-              taskId: this.taskId,
-              assessmentId: this.assessmentId,
-            },
-          });
+        if (!task.completed) {
+          return;
         }
+
+        if (
+          !this.$session.get('initTaskFinished')
+          && task.taskType === 'INITIAL_ASSESSMENT'
+          && task.completed
+        ) {
+          this.$session.set('initTaskFinished', true);
+        }
+
+        this.$router.push({
+          name:
+            task.taskType !== 'FINAL_ASSESSMENT' ? 'Tasks' : 'AssessmentResult',
+          params: {
+            taskId: this.taskId,
+            assessmentId: this.assessmentId,
+          },
+        });
+        // }
       });
     },
     showComponent() {

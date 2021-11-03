@@ -1,32 +1,50 @@
 <template>
-  <div class="result-content">
+  <div class="result-content" v-if="assessmentResult">
     <div class="score-content text-left">
       <b-row>
         <b-col cols="3">
           <span class="h6">Rating: {{ assessmentResult.ratingScale }}</span>
         </b-col>
+        <b-col offset="6">
+          <button class="btn btn-outline-primary" @click.prevent="onTasksClick">Practice Tasks</button>
+        </b-col>
       </b-row>
     </div>
     <b-row>
-      <b-col cols="5" offset="3"><span class="h6">Part 1 Story Reading</span></b-col>
+      <b-col cols="5" offset="3">
+        <span class="h6">Part 1 Story Reading</span>
+      </b-col>
     </b-row>
 
-    <div class="score-content">
+    <div class="score-content text-left">
       <b-row>
-        <b-col cols="3" offset="1">Initial score: {{ assessmentResult.initialReadingScore }}%</b-col>
-        <b-col cols="3" offset="*">Final score: {{ assessmentResult.finalReadingScore }}%</b-col>
-        <b-col cols="3" offset="*">Score Improvement: {{ this.initialReadingScoreDifference }}%</b-col>
+        <b-col cols="3" offset="1">Initial WPM: {{ assessmentResult.initialReadingWPM.toFixed(2) }}</b-col>
+        <b-col cols="3" offset="*">Final WPM: {{ assessmentResult.finalReadingWPM.toFixed(2) }}</b-col>
+        <b-col cols="3" offset="*">WPM Improvement: {{ this.readingWPMImprovement.toFixed(2) }}</b-col>
+      </b-row>
+      <b-row>
+        <b-col
+          cols="3"
+          offset="1"
+        >Initial Accuracy: {{ assessmentResult.initialReadingAccuracy.toFixed(2) }}</b-col>
+        <b-col
+          cols="3"
+          offset="*"
+        >Final Accuracy: {{ assessmentResult.finalReadingAccuracy.toFixed(2) }}</b-col>
+        <b-col cols="3" offset="*">Accuracy Improvement: {{ this.readingAccuracyImprovement.toFixed(2) }}</b-col>
       </b-row>
     </div>
 
     <b-row>
-      <b-col cols="5" offset="3"><span class="h6">Part 2 Questionnaire</span></b-col>
+      <b-col cols="5" offset="3">
+        <span class="h6">Part 2 Questionnaire</span>
+      </b-col>
     </b-row>
-    <div class="score-content">
+    <div class="score-content text-left">
       <b-row>
-        <b-col cols="3" offset="1">Initial score: {{ assessmentResult.initialScore }}%</b-col>
-        <b-col cols="3" offset="*">Final score: {{ assessmentResult.finalScore }}%</b-col>
-        <b-col cols="3" offset="*">Score Improvement: {{ this.finalScoreDifference }}%</b-col>
+        <b-col cols="3" offset="1">Initial score: {{ assessmentResult.initialScore.toFixed(2) }}%</b-col>
+        <b-col cols="3" offset="*">Final score: {{ assessmentResult.finalScore.toFixed(2) }}%</b-col>
+        <b-col cols="3" offset="*">Score Improvement: {{ this.scoreImprovement.toFixed(2) }}%</b-col>
       </b-row>
     </div>
 
@@ -61,19 +79,33 @@ export default {
   },
   methods: {
     ...mapActions(['getAssessmentResult']),
+    onTasksClick() {
+      this.$router.push({
+        name: 'Tasks',
+        params: {
+          assessmentId: this.assessmentId,
+        },
+      });
+    },
   },
 
   computed: {
     ...mapState({
       assessmentResult: (state) => state.assessmentResult,
     }),
-    initialReadingScoreDifference() {
+    readingWPMImprovement() {
       return (
-        this.assessmentResult.finalReadingScore
-        - this.assessmentResult.initialReadingScore
+        this.assessmentResult.finalReadingWPM
+        - this.assessmentResult.initialReadingWPM
       );
     },
-    finalScoreDifference() {
+    readingAccuracyImprovement() {
+      return (
+        this.assessmentResult.finalReadingAccuracy
+        - this.assessmentResult.initialReadingAccuracy
+      );
+    },
+    scoreImprovement() {
       return (
         this.assessmentResult.finalScore - this.assessmentResult.initialScore
       );

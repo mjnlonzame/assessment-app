@@ -18,5 +18,6 @@ export default {
 <style scoped>
 .error-message {
   color: red;
+  height: 1px
 }
 </style>

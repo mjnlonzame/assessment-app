@@ -4,19 +4,17 @@
     <b-button
       variant="light"
       class="rounded-circle px-2"
-
       :color="!toggle ? 'grey' : (speaking ? 'red' : 'red darken-3')"
       @click.stop="toggle ? endSpeechRecognition() : startSpeechRecognition()"
     >
       <b-icon
-      :icon="toggle ? 'mic-mute' : 'mic'"
-       font-scale="1"
-       :variant="toggle ? 'danger' : 'secondary'"
-       :animation="toggle ? 'fade' : ''">
-      </b-icon>
+        :icon="toggle ? 'mic-mute' : 'mic'"
+        font-scale="1"
+        :variant="toggle ? 'danger' : 'secondary'"
+        :animation="toggle ? 'fade' : ''"
+      ></b-icon>
     </b-button>
   </div>
-
 </template>
 
 <script>
@@ -35,13 +33,13 @@ export default {
     },
   },
   created() {
-    recognition.addEventListener('speechstart', () => {
-      this.speaking = true;
-    });
+    // recognition.addEventListener('speechstart', () => {
+    //   this.speaking = true;
+    // });
 
-    recognition.addEventListener('speechend', () => {
-      this.speaking = false;
-    });
+    // recognition.addEventListener('speechend', () => {
+    //   this.speaking = false;
+    // });
 
     recognition.addEventListener('result', (event) => {
       const text = Array.from(event.results)
@@ -64,7 +62,6 @@ export default {
       }
       this.runtimeTranscription = '';
       recognition.stop();
-      console.log('toggle', this.toggle);
       if (this.toggle) {
         // keep it going.
         recognition.start();
@@ -87,16 +84,20 @@ export default {
       }
     },
     endSpeechRecognition() {
+      this.speaking = false;
       recognition.stop();
       this.toggle = false;
       this.$emit('speechend', {
         sentences: this.sentences,
         // text: this.sentences.join('. '),
         text: this.sentences,
-        peaking: this.speaking,
+        speaking: this.speaking,
       });
     },
     startSpeechRecognition() {
+      this.speaking = true;
+      this.$emit('speechstart', this.speaking);
+
       if (!recognition) {
         this.error = 'Speech Recognition is not available on this browser. Please use Chrome or Firefox';
         return;

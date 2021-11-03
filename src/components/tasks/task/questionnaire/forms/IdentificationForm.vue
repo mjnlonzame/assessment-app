@@ -1,22 +1,59 @@
 <template>
   <div>
-    <b-row v-for="(answer, index) in answers" :key="answer.questionId" class="question-content">
-      <b-col sm="8" class="text-left">
-        <label :for="`question-${index}`">{{ (index + 1) + ". " + answer.question}}</label>
-      </b-col>
-      <b-col cols="4">
-        <b-form-input
-          :id="`question-${index}`"
-          v-model="answer.value"
-          :class="{ hasErrors: $v.answers.$each[index].value.$error }"
-          @blur="$v.answers.$each[index].value.$touch()"
-          :state="answerState(index)"
-        ></b-form-input>
-      </b-col>
-    </b-row>
+    <div v-show="!assessmentCompleted || answersHidden">
+      <b-row v-for="(answer, index) in answers" :key="answer.questionId" class="question-content">
+        <b-col sm="8" class="text-left">
+          <label :for="`question-${index}`">{{ (index + 1) + ". " + answer.question}}</label>
+        </b-col>
+        <b-col cols="4">
+          <b-form-input
+            :id="`question-${index}`"
+            v-model="answer.value"
+            :class="{ hasErrors: $v.answers.$each[index].value.$error }"
+            @blur="$v.answers.$each[index].value.$touch()"
+            :state="answerState(index)"
+          ></b-form-input>
+        </b-col>
+      </b-row>
+    </div>
+    <div v-show="assessmentCompleted && !answersHidden">
+      <b-row v-for="(answer, index) in answers" :key="answer.questionId" class="question-content">
+        <b-col sm="8" class="text-left">
+          <label :for="`question-${index}`">{{ (index + 1) + ". " + answer.question}}</label>
+        </b-col>
+        <b-col cols="4">
+          <b-form-input
+            :id="`question-${index}`"
+            :value="correctAnswers(answer.correctAnswers)"
+            :readonly="true"
+          ></b-form-input>
+        </b-col>
+      </b-row>
+    </div>
     <b-row>
       <b-col>
-        <b-button size="lg" variant="outline-primary" @click="onSubmitClick()">Submit</b-button>
+        <b-button
+          size="lg"
+          variant="outline-primary"
+          v-b-modal.modal-1
+          :hidden="!assessmentCompleted"
+          @click="answersHidden = !answersHidden"
+        >{{answersHidden ? 'Show Answers' : 'Hide Answers' }}</b-button>
+        <b-button
+          size="lg"
+          variant="outline-primary"
+          v-show="answersHidden"
+          v-b-modal.modal-1
+          @click="onSubmitClick"
+        >Submit</b-button>
+        <ConfirmationModal
+          @clickedOk="() => handleClickedOk()"
+          @openedModal="() => handleOpenedModal()"
+          @closedModal="() => handleClosedMOdal()"
+          :isVisible="isFormValid"
+          :launchBtnName="'Submit'"
+          :bodyText="'Do you want to submit your answer/s?'"
+        />
       </b-col>
     </b-row>
   </div>
@@ -25,29 +62,30 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
+import QuestionairreMixin from '../../../../shared/mixins/QuestionairreMixin.vue';
+import ConfirmationModal from '../../../../shared/ConfirmationModal.vue';
 
 export default {
   name: 'IdentificationForm',
+  mixins: [QuestionairreMixin],
+  components: {
+    // ErrorValidation,
+    ConfirmationModal,
+  },
   created() {
-    this.questionAnswers.forEach((questionAnswer) => {
-      const answer = {};
-      answer.questionId = questionAnswer.question.id;
-      answer.question = questionAnswer.question.value;
-      answer.value = questionAnswer.value;
-      // REFACTOR only once choice is available for identification
-       answer.correctAnswers = questionAnswer.question.choices.map((choice) => choice.value);
-      this.answers.push(answer);
-    });
+    this.questionAnswers.forEach(this.prepareQuestionAnswer);
   },
   props: {
     questionAnswers: {
       type: Array,
     },
-    submitted: Boolean,
+    assessmentCompleted: Boolean,
+    answersValidated: Boolean,
   },
   data() {
     return {
       answers: [],
+      answersHidden: true,
     };
   },
   computed: {
@@ -59,16 +97,23 @@ export default {
     ...mapActions(['getTask']),
     answerState(index) {
       const answer = this.answers[index];
-      console.log(answer.value);
-      if (!this.submitted || answer.value === '') return null;
-      console.log(answer.value, answer.correctAnswers);
-      return answer.correctAnswers.some((correctAnswer) => correctAnswer === answer.value);
+      if (!this.answersValidated || answer.value === '') return null;
+      return answer.correctAnswers.some(
+        (correctAnswer) => correctAnswer === answer.value,
+      );
     },
-    onSubmitClick() {
-      this.$v.$touch();
-      if (!this.$v.$invalid) {
-        this.$emit('questionAnswersSubmitted', this.answers);
-      }
+    correctAnswers(correctAnswers) {
+      return correctAnswers.join(', ');
+    },
+    prepareQuestionAnswer(questionAnswer) {
+      const answer = {};
+      answer.questionId = questionAnswer.question.id;
+      answer.question = questionAnswer.question.value;
+      answer.value = questionAnswer.value;
+      answer.correctAnswers = questionAnswer.question.choices.map(
+        (choice) => choice.value,
+      );
+      this.answers.push(answer);
     },
   },
   validations: {
