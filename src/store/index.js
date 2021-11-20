@@ -4,6 +4,7 @@ import axios from 'axios';
 
 Vue.use(Vuex);
 console.log(process.env.VUE_APP_API_URL);
+const url = process.env.VUE_APP_API_URL;
 export default new Vuex.Store({
   state: {
     student: null,
@@ -47,7 +48,8 @@ export default new Vuex.Store({
     login({
       commit,
     }, loginDetails) {
-      return axios.post('/api/user/login', loginDetails).then((response) => {
+      console.log('url', url);
+      return axios.post(`${url}/user/login`, loginDetails).then((response) => {
         console.log(response.data);
         commit('updateCurrentStudent', response.data.student);
         return response.data;
