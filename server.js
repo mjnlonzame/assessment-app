@@ -4,7 +4,14 @@ const serveStatic = require('serve-static');
 const cors = require('cors');
 
 app = express();
-app.use(cors());
+
+const corsOptions = {
+  origin: '*',
+  credentials: true, // access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
 app.use(serveStatic(`${__dirname}/dist`));
 const port = process.env.PORT || 3000;
 app.listen(port);

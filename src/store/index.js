@@ -5,6 +5,7 @@ import axios from 'axios';
 Vue.use(Vuex);
 console.log(process.env.VUE_APP_API_URL);
 const url = process.env.VUE_APP_API_URL;
+
 export default new Vuex.Store({
   state: {
     student: null,
@@ -58,7 +59,7 @@ export default new Vuex.Store({
     getStudentDetails({
       commit,
     }, studentId) {
-      return axios.post(`/api/student/${studentId}`).then((response) => {
+      return axios.post(`${url}/student/${studentId}`).then((response) => {
         commit('updateCurrentStudent', response.data);
         return response.data;
       }).catch(console.error);
@@ -66,7 +67,7 @@ export default new Vuex.Store({
     register({
       commit,
     }, student) {
-      return axios.post('/api/student/register', student).then((response) => response.data).catch((error) => {
+      return axios.post(`${url}/student/register`, student).then((response) => response.data).catch((error) => {
         commit('updateError', error.response.data);
       });
     },
@@ -74,7 +75,7 @@ export default new Vuex.Store({
       commit,
     }, studentId) {
       return axios
-        .get(`/api/assessment/${studentId}/load`)
+        .get(`${url}/assessment/${studentId}/load`)
         .then((response) => {
           commit('updateAssessment', response.data);
           return response.data;
@@ -84,7 +85,7 @@ export default new Vuex.Store({
       commit,
     }, studentId) {
       return axios
-        .get(`/api/assessment/${studentId}/result`)
+        .get(`${url}/assessment/${studentId}/result`)
         .then((response) => {
           commit('updateAssessmentResult', response.data);
           return response.data;
@@ -94,7 +95,7 @@ export default new Vuex.Store({
       commit,
     }) {
       return axios
-        .get('/api/assessment/results')
+        .get(`${url}/assessment/results`)
         .then((response) => {
           commit('updateAssessmentResults', response.data);
           return response.data;
@@ -104,7 +105,7 @@ export default new Vuex.Store({
       commit,
     }, assessmentId) {
       axios
-        .get(`/api/task/${assessmentId}/load`)
+        .get(`${url}/task/${assessmentId}/load`)
         .then((response) => {
           commit('updateTasks', response.data);
         });
@@ -113,7 +114,7 @@ export default new Vuex.Store({
       commit,
     }, taskId) {
       return axios
-        .get(`/api/task/${taskId}`)
+        .get(`${url}/task/${taskId}`)
         .then((response) => {
           commit('updateTask', response.data);
         });
@@ -121,7 +122,7 @@ export default new Vuex.Store({
     // eslint-disable-next-line no-empty-pattern
     getInitialTask({}, assessmentId) {
       return axios
-        .get(`/api/task/${assessmentId}/initial-task`)
+        .get(`${url}/task/${assessmentId}/initial-task`)
         .then((response) => response.data);
     },
     // eslint-disable-next-line no-empty-pattern
@@ -133,7 +134,7 @@ export default new Vuex.Store({
       time,
     }) {
       return axios
-        .post(`/api/task/${taskId}/submit/part1`, {
+        .post(`${url}/task/${taskId}/submit/part1`, {
           readWords,
           time,
         })
@@ -150,7 +151,7 @@ export default new Vuex.Store({
       answers,
     }) {
       return axios
-        .post(`/api/task/${taskId}/submit/part2`, answers)
+        .post(`${url}/task/${taskId}/submit/part2`, answers)
         .then((response) => {
           commit('updateTask', response.data);
           return response.data;
