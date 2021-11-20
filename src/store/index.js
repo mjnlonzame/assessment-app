@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import axios from 'axios';
 
 Vue.use(Vuex);
+console.log(process.env.VUE_APP_API_URL);
 export default new Vuex.Store({
   state: {
     student: null,
