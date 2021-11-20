@@ -12,7 +12,7 @@
     </div>
     <b-row>
       <b-col cols="5" offset="3">
-        <span class="h6">Part 1 Story Reading</span>
+        <span class="h6">Story Reading</span>
       </b-col>
     </b-row>
 
@@ -37,7 +37,7 @@
 
     <b-row>
       <b-col cols="5" offset="3">
-        <span class="h6">Part 2 Questionnaire</span>
+        <span class="h6">Questionnaire</span>
       </b-col>
     </b-row>
     <div class="score-content text-left">
@@ -72,7 +72,7 @@ import { mapState, mapActions } from 'vuex';
 export default {
   name: 'AssessmentResult',
   created() {
-    this.getAssessmentResult(this.assessmentId);
+    this.getAssessmentResult(this.$session.get('studentId'));
   },
   props: {
     assessmentId: Number,

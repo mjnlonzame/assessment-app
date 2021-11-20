@@ -118,7 +118,7 @@
       </b-col>
     </b-row>
     <b-row class="row">
-      <b-col cols="8" class="text-center">
+      <b-col cols="3" class="text-center" offset="7">
         <button class="btn btn-outline-primary" @click.prevent="onNextTaskClick">Go to Task</button>
       </b-col>
     </b-row>

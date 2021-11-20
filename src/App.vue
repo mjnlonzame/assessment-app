@@ -73,4 +73,5 @@ body {
   transform: translateX(-50%);
   color: #6c757d;
 }
+
 </style>

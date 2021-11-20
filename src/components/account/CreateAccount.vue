@@ -178,17 +178,18 @@
         </b-col>-->
       </b-row>
       <b-row class="row">
-        <b-col cols="8" class="text-center">
+        <b-col cols="12" class="text-center">
           <ErrorValidation :hasError="hasError" :errorMessage="error && error.message" />
           <button class="btn btn-outline-primary" @click.prevent="onRegisterClick">Register</button>
+
         </b-col>
       </b-row>
       <br />
       <b-row class="row">
-        <b-col cols="4">
+        <b-col cols="4" offset="2">
           <span>Have an account?</span>
         </b-col>
-        <b-col cols="1" class="text-center" offset="*">
+        <b-col cols="4" class="text-center" offset="*">
           <router-link to="/login" class="btn btn-outline-primary">Login</router-link>
         </b-col>
       </b-row>

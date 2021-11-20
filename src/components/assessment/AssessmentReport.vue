@@ -44,7 +44,7 @@ export default {
       fields: [
         {
           key: 'studentDto.fullName',
-          sortable: false,
+          sortable: true,
           label: 'Student Name',
           stickyColumn: true,
         },
@@ -80,6 +80,7 @@ export default {
           sortable: false,
           label: 'Initial and Final Questionnaire',
         },
+
       ],
     };
   },

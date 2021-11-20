@@ -2,7 +2,7 @@ s<template>
   <div class="login-container">
     <form novalidate @submit.prevent="onLoginClick">
       <b-row>
-        <b-col cols="6" offset="3">
+        <b-col cols="4" offset="4">
           <div class="form-group">
             <label for="username">Username</label>
             <b-form-input
@@ -24,7 +24,7 @@ s<template>
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="6" offset="3">
+        <b-col cols="4" offset="4">
           <div class="form-group">
             <label for="password">Password</label>
             <input

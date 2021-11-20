@@ -35,7 +35,7 @@ export default {
   name: 'TaskQuestionnaire',
   mixins: [TaskTypeMixin],
   created() {
-    this.getAssessment(this.assessmentId);
+    this.getAssessment(this.$session.get('studentId'));
     this.getTask(this.taskId).then(() => {
       this.showComponent();
     });
@@ -63,7 +63,7 @@ export default {
       assessment: (state) => state.assessment,
     }),
     failed() {
-      return !this.task.completed && this.s;
+      return !this.task.completed && this.submitted;
     },
   },
   methods: {
