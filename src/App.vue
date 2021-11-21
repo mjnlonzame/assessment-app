@@ -54,14 +54,19 @@ export default {
 } */
 
 .breadcrumb {
-  background-color: whitesmoke !important;
+  background-color: #fce0d4 !important;
 }
 
 .hasErrors {
   border-color: red !important;
 }
+
 body {
   background-image: url("./assets/bg.jpeg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   opacity: 0.95;
 }
 
@@ -73,5 +78,4 @@ body {
   transform: translateX(-50%);
   color: #6c757d;
 }
-
 </style>

@@ -123,6 +123,7 @@ export default {
 .tip-content {
   margin: 10px;
   padding: 10px;
+  background-color: #F6D4C5;
 }
 
 .tip-title {

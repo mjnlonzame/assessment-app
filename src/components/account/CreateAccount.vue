@@ -186,10 +186,10 @@
       </b-row>
       <br />
       <b-row class="row">
-        <b-col cols="4" offset="2">
-          <span>Have an account?</span>
+        <b-col cols="6" offset="3">
+          <span class="ask">Already have an account with us?</span>
         </b-col>
-        <b-col cols="4" class="text-center" offset="*">
+        <b-col cols="8" class="text-center" offset="2">
           <router-link to="/login" class="btn btn-outline-primary">Login</router-link>
         </b-col>
       </b-row>
@@ -276,4 +276,7 @@ export default {
 </script>
 
 <style  scoped>
+.ask{
+font-family: 'Times new roman', sans-serif; font-size: 15px; font-weight: bold; letter-spacing: 1px; color: #5D6D7E;
+}
 </style>

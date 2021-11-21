@@ -4,7 +4,7 @@ s<template>
       <b-row>
         <b-col cols="4" offset="4">
           <div class="form-group">
-            <label for="username">Username</label>
+            <label for="username">Email</label>
             <b-form-input
               type="text"
               id="username"
@@ -111,6 +111,9 @@ export default {
 
 <style  scoped>
 .login-container {
-  min-height: 300px !important;
+  min-height: 100px !important;
+}
+button {
+  vertical-align: -30px;
 }
 </style>

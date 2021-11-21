@@ -5,6 +5,12 @@
         <div class="intro-content">
           <b-row>
             <b-col>
+              <h3 class="welcome">
+                Welcome to our Reading Comprehension
+                <br />Web Application
+                <br />
+                <br />
+              </h3>
               <p class="lead">{{getWelcomeMessage()}}</p>
             </b-col>
           </b-row>
@@ -46,7 +52,7 @@ export default {
     ...mapActions(['getStudent']),
     getWelcomeMessage() {
       // eslint-disable-next-line max-len
-      return 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Distinctio quo ab iusto dicta a, commodi deleniti aperiam itaque aspernatur odio possimus delectus quod maxime, quasi optio. Quis, itaque ipsam ex sunt at repellat pariatur maiores ullam quos beatae quae eveniet doloribus eius, quod molestias voluptatum delectus dolorum dignissimos esse laborum! Quam, voluptas. Molestiae voluptas ad aliquam architecto dolorem pariatur? Ipsum quo impedit aperiam corrupti dolores quaerat! Aut, minus quo! Facere molestiae reprehenderit temporibus in fugit dolor laudantium eaque nemo quasi dolores? Ratione corrupti magnam dolore enim dolor atque omnis tenetur, architecto deleniti eius. Voluptate amet nesciunt similique quod, tempora neque!';
+      return 'Here, your current Reading Comprehension level will be measured as well as your Reading Fluency with the help of a Speech Recognition Software';
     },
   },
 };
@@ -54,9 +60,16 @@ export default {
 
 <style>
 .intro-content {
-  padding: 15px;
+  padding: 35px;
   border: 1px solid gray;
   height: 100%;
   min-height: 550px;
+  font-family: "Lucida Console", "Courier New", monospace;
+  background-color: #F6D4C5;
+  border-radius: 25px;
+
+}
+.welcome {
+font-family: 'Helvetica Neue', sans-serif; font-size: 35px; font-weight: bold; letter-spacing: 1px; color: #5D6D7E;
 }
 </style>
