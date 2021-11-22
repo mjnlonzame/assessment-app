@@ -2,7 +2,7 @@
   <div v-if="task && assessment" class="questionnaire-container">
     <b-alert variant="danger" :show="failed">You have failed the test. Please retake.</b-alert>
     <div class="text-left">
-      <h1>{{getTaskTypeName(task.taskType)}} Part 2</h1>
+      <h1>{{getTaskTypeName(task.taskType)}} {{this.part2}}</h1>
     </div>
     <div>
       <p class="text-left h5">{{task.instruction}}</p>
@@ -64,6 +64,9 @@ export default {
     }),
     failed() {
       return !this.task.completed && this.submitted;
+    },
+    part2() {
+      return this.task.taskType !== 'CONCEPTUALIZING' ? 'Part 2' : '';
     },
   },
   methods: {
