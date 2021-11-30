@@ -63,7 +63,8 @@ export default {
       return this.tasks.find((task) => task.taskType === 'FINAL_ASSESSMENT');
     },
     isFinalTaskHidden() {
-      return this.assessment.completed;
+      return false;
+      // return this.assessment.completed;
     },
   },
   methods: {
@@ -78,12 +79,13 @@ export default {
       });
     },
     getButtonText(task) {
-      const buttonText = task.taskType === 'FINAL_ASSESSMENT'
-          ? `Proceed to 
-          Final Assessment`
-          : `${this.getTaskTypeName(task.taskType)}`;
-      return buttonText;
+     if (task.taskType === 'FINAL_ASSESSMENT') {
+       return this.assessment.completed ? 'Retake Final Assessment' : `Proceed to 
+          Final Assessment`;
+     }
+       return this.getTaskTypeName(task.taskType);
     },
+
     isDisabled(task) {
       if (this.assessment.completed) {
         return false;

@@ -65,10 +65,12 @@ export default {
   },
   created() {
     this.getTask(this.taskId);
+    // generate new task if this.task is completed
   },
   props: {
     taskId: Number,
     assessmentId: Number,
+    retake: Boolean,
   },
   data() {
     return {

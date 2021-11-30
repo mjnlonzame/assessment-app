@@ -31,7 +31,10 @@
           cols="3"
           offset="*"
         >Final Accuracy: {{ assessmentResult.finalReadingAccuracy.toFixed(2) }}</b-col>
-        <b-col cols="3" offset="*">Accuracy Improvement: {{ this.readingAccuracyImprovement.toFixed(2) }}</b-col>
+        <b-col
+          cols="3"
+          offset="*"
+        >Accuracy Improvement: {{ this.readingAccuracyImprovement.toFixed(2) }}</b-col>
       </b-row>
     </div>
 
@@ -63,16 +66,27 @@
         </b-col>
       </b-row>
     </div>
+    <div>
+      <retaken-tasks
+        :tasks="assessmentResult.taskDtoList"
+        :hasBackButton="false"
+        v-if="true"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import RetakenTasks from './RetakenTasks.vue';
 
 export default {
   name: 'AssessmentResult',
   created() {
     this.getAssessmentResult(this.$session.get('studentId'));
+  },
+  components: {
+    RetakenTasks,
   },
   props: {
     assessmentId: Number,
@@ -123,7 +137,7 @@ export default {
 .tip-content {
   margin: 10px;
   padding: 10px;
-  background-color: #F6D4C5;
+  background-color: #f6d4c5;
 }
 
 .tip-title {

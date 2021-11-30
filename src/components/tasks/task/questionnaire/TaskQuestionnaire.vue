@@ -15,7 +15,7 @@
           v-bind:is="component"
           :questionAnswers="task.questionAnswers"
           :answersValidated="answersValidated"
-          :assessmentCompleted="assessment.completed"
+          :assessmentCompleted="assessment.completed && task.taskType !== 'FINAL_ASSESSMENT'"
           @questionAnswersSubmitted="(questionAnswers) => handleAnswersSubmitted(questionAnswers)"
         />
       </b-col>
@@ -72,7 +72,7 @@ export default {
   methods: {
     ...mapActions(['getTask', 'submitTaskPart2', 'getAssessment']),
     handleAnswersSubmitted(answers) {
-      if (this.assessment.completed) {
+      if (this.assessment.completed && this.task.taskType !== 'FINAL_ASSESSMENT') {
         this.answersValidated = true;
         return;
       }
