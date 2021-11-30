@@ -77,7 +77,7 @@ export default {
         return;
       }
 
-      this.submitTaskPart2({ taskId: this.taskId, answers }).then((task) => {
+      this.submitTaskPart2({ taskId: this.task.id, answers }).then((task) => {
         this.submitted = true;
         if (!task.completed) {
           return;
@@ -97,6 +97,7 @@ export default {
           params: {
             taskId: this.taskId,
             assessmentId: this.assessmentId,
+            studentId: this.$session.get('studentId'),
           },
         });
         // }

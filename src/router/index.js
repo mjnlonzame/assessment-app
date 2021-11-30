@@ -123,7 +123,7 @@ const router = new Router({
 
     },
     {
-      path: '/assessment/:assessmentId/result',
+      path: '/assessment/:studentId/result',
       name: 'AssessmentResult',
       component: AssessmentResult,
       props: true,

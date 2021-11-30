@@ -89,7 +89,7 @@ export default {
     RetakenTasks,
   },
   props: {
-    assessmentId: Number,
+    studentId: Number,
   },
   methods: {
     ...mapActions(['getAssessmentResult']),
@@ -97,7 +97,7 @@ export default {
       this.$router.push({
         name: 'Tasks',
         params: {
-          assessmentId: this.assessmentId,
+          assessmentId: this.assessmentResult.assessmentId,
         },
       });
     },

@@ -15,7 +15,7 @@ export default {
           this.$router.push({
             name: 'AssessmentResult',
             params: {
-              assessmentId: assessment.id,
+              studentId,
             },
           });
         } else {

@@ -115,7 +115,7 @@ export default {
 
     onSubmitClick() {
       this.submitTaskPart1({
-        taskId: this.taskId,
+        taskId: this.task.id,
         readWords: this.sentences.join(''),
         time: this.time,
       });
